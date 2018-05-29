@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>DiscordJavaBot</groupId>
+    <artifactId>DiscordZarmBot4</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <url>https://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!-- DV8 -->
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>3.3.0_265</version>
+        </dependency>
+
+        <!-- Javacord -->
+        <dependency>
+            <groupId>de.btobastian.javacord</groupId>
+            <artifactId>javacord</artifactId>
+            <version>2.0.17</version>
+            <!-- This will use the shaded javacord which contains all required dependencies -->
+            <classifier>shaded</classifier>
+        </dependency>
+        <!-- A SLF4J comaptible logging framework. I would recommend to use logback -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.3</version>
+        </dependency>
+
+        <!-- sdcf4j -->
+        <dependency>
+            <groupId>de.btobastian.sdcf4j</groupId>
+            <artifactId>sdcf4j-core</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+
+        <!-- YouTube -->
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-youtube</artifactId>
+            <version>v3-rev184-1.22.0</version>
+        </dependency>
+
+        <!-- StrawPoll -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <!-- The module for your prefered lib-->
+        <dependency>
+            <groupId>de.btobastian.sdcf4j</groupId>
+            <!-- Possible artifact ids: sdcf4j-javacord, sdcf4j-jda, sdcf4j-jda3, sdcf4j-discord4j -->
+            <artifactId>sdcf4j-javacord</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+
+    </dependencies>
+
+    <repositories>
+        <!-- DV8 -->
+        <repository>
+            <id>jcenter</id>
+            <name>jcenter-bintray</name>
+            <url>http://jcenter.bintray.com</url>
+        </repository>
+
+        <!-- Javacord -->
+        <repository>
+            <id>javacord-repo</id>
+            <url>http://repo.bastian-oppermann.de</url>
+        </repository>
+
+        <!-- sdcf4j -->
+        <repository>
+            <id>sdcf4j-repo</id>
+            <url>http://repo.bastian-oppermann.de</url>
+        </repository>
+
+        <!-- Jitpack -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+</project>
