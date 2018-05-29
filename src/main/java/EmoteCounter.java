@@ -61,7 +61,7 @@ public class EmoteCounter{
      * Handles message with emote/s
      * @param message
      */
-    public void messageWithEmote(Message message) { //check this method works
+    public void messageWithEmote(Message message) {
         if (msgCount == 0) {
             ResetEmoteList(message);
             msgCount++;
