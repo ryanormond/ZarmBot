@@ -28,7 +28,7 @@ public class App {
      * Constructor
      */
     private App(){
-        //api set
+        //api set and read in token for bot
         api = Javacord.getApi("MzU3MTUwMTQ4MDA4MDgzNDcw.DJltkQ.17BKcW8CL7Or3bsEtKS0ivIUDHQ", true);
     }
 }
