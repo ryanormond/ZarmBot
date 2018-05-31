@@ -32,6 +32,7 @@
             <!-- This will use the shaded javacord which contains all required dependencies -->
             <classifier>shaded</classifier>
         </dependency>
+
         <!-- A SLF4J comaptible logging framework. I would recommend to use logback -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -46,12 +47,13 @@
             <version>1.0.5</version>
         </dependency>
 
-        <!-- YouTube -->
+        <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
         <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-youtube</artifactId>
-            <version>v3-rev184-1.22.0</version>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.8.7</version>
         </dependency>
+
 
         <!-- StrawPoll -->
         <dependency>

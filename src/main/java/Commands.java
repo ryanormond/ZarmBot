@@ -4,6 +4,7 @@ public class Commands {
 
     /**
     * Simple Ping Pong Command
+     * Here for testing
      */
     public static void ping(Channel objChannel) {
         objChannel.sendMessage("pong");

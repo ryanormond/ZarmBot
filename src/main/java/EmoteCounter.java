@@ -4,6 +4,7 @@ import de.btobastian.javacord.entities.Channel;
 import de.btobastian.javacord.entities.CustomEmoji;
 import de.btobastian.javacord.entities.message.Message;
 
+import java.sql.Statement;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
@@ -31,6 +32,11 @@ public class EmoteCounter{
         ResetEmoteList(objMsg);
     }
 
+    public void insert(){
+
+        String sql = "";
+    }
+
     /**
      * Changes current emote list to empty and repopulates
      * with all fresh emotes.
@@ -43,10 +49,7 @@ public class EmoteCounter{
         for (CustomEmoji e: emojis) {
             countEmotes.put(e.getName(), 0);
         }
-        //create hard storage like a sqlite file for separate servers
-            //use serverID as the tag and delete whole block
-            //then write back to file new list
-            //
+
     }
 
     /**

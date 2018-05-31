@@ -7,10 +7,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 public class App {
     //field variables
     private static DiscordAPI api;
     private String token = "";
+    private Connection conn = null;
 
     public static void main(String[] args ) {
 
@@ -46,5 +51,18 @@ public class App {
             e.printStackTrace();
         }
         api = Javacord.getApi(token, true);
+        conn = connect();
+    }
+
+    public Connection connect(){
+            try {
+                conn = DriverManager.getConnection("jdbc:sqlite:database/serversEmotes.db");
+                System.out.println("Connection closed: " + conn.isClosed());
+                System.out.println("\nConnection to database successful\n");
+                //maybe create log files for things like this
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        return conn;
     }
 }
