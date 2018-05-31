@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public class EmoteCounter{
 
     private final DiscordAPI api;
-    private Connection conn;
+    private static Connection conn;
     private HashMap<String, Integer> countEmotes;
     private Collection<CustomEmoji> emojis;
     private String serverID;
@@ -25,20 +25,21 @@ public class EmoteCounter{
     public EmoteCounter(DiscordAPI api) {
         this.api = api;
         msgCount = 0;
-        this.conn = connect();
+        this.conn = this.connect();
     }
 
 
     private Connection connect() {
+        Connection connection = null;
         try {
-            conn = DriverManager.getConnection("jdbc:sqlite:database/serversEmotes.db");
-            System.out.println("Connection closed: " + conn.isClosed());
+            connection = DriverManager.getConnection("jdbc:sqlite:database/serversEmotes.db");
+            System.out.println("Connection closed: " + connection.isClosed());
             System.out.println("\nConnection to database successful\n");
             //maybe create log files for things like this
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return conn;
+        return connection;
     }
 
     /**
