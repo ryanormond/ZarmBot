@@ -4,14 +4,19 @@ import de.btobastian.javacord.entities.Channel;
 import de.btobastian.javacord.entities.CustomEmoji;
 import de.btobastian.javacord.entities.message.Message;
 
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 public class EmoteCounter{
 
     private final DiscordAPI api;
+    private Connection conn;
     private HashMap<String, Integer> countEmotes;
     private Collection<CustomEmoji> emojis;
     private String serverID;
@@ -20,6 +25,20 @@ public class EmoteCounter{
     public EmoteCounter(DiscordAPI api) {
         this.api = api;
         msgCount = 0;
+        this.conn = connect();
+    }
+
+
+    private Connection connect() {
+        try {
+            conn = DriverManager.getConnection("jdbc:sqlite:database/serversEmotes.db");
+            System.out.println("Connection closed: " + conn.isClosed());
+            System.out.println("\nConnection to database successful\n");
+            //maybe create log files for things like this
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return conn;
     }
 
     /**
@@ -32,9 +51,26 @@ public class EmoteCounter{
         ResetEmoteList(objMsg);
     }
 
-    public void insert(){
+    public void insert(String emote, String serverid, int timesUsed) {
 
-        String sql = "";
+        String sql = "INSERT INTO emotes (emote, serverid, timesUsed)\n" +
+                    "VALUES ('" + emote + "'," + serverid + "," + timesUsed + ");";
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setQueryTimeout(10);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if(pstmt != null){
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -45,11 +81,9 @@ public class EmoteCounter{
     public void ResetEmoteList(Message message){
         serverID = message.getChannelReceiver().getServer().getId();
         emojis = api.getServerById(serverID).getCustomEmojis();
-        countEmotes = new HashMap<>();
         for (CustomEmoji e: emojis) {
-            countEmotes.put(e.getName(), 0);
+            insert(e.getName(), serverID, 0);
         }
-
     }
 
     /**
