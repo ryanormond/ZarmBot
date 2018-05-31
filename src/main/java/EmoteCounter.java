@@ -42,9 +42,8 @@ public class EmoteCounter{
         countEmotes = new HashMap<>();
         for (CustomEmoji e: emojis) {
             countEmotes.put(e.getName(), 0);
-            //write to json file instead
         }
-        //create hard storage like a json file for separate servers
+        //create hard storage like a sqlite file for separate servers
             //use serverID as the tag and delete whole block
             //then write back to file new list
             //
