@@ -32,7 +32,7 @@ public class EmoteCounter{
     private Connection connect() {
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:database/serversEmotes.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:database/serversDB.db");
             System.out.println("Connection closed: " + connection.isClosed());
             System.out.println("\nConnection to database successful\n");
             //maybe create log files for things like this
@@ -52,25 +52,16 @@ public class EmoteCounter{
         ResetEmoteList(objMsg);
     }
 
-    public void insert(String emote, String serverid, int timesUsed) {
+    public void insert(String id, String emote, int timesUsed) {
 
-        String sql = "INSERT INTO emotes (emote, serverid, timesUsed)\n" +
-                    "VALUES ('" + emote + "'," + serverid + "," + timesUsed + ");";
-        PreparedStatement pstmt = null;
+        String sql = "INSERT INTO emotes (serverid, emote, timesUsed)\n" +
+                    "VALUES ('" + id + "','" + emote + "'," + timesUsed + ");";
         try {
-            pstmt = conn.prepareStatement(sql);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if(pstmt != null){
-                try {
-                    pstmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -82,8 +73,9 @@ public class EmoteCounter{
     public void ResetEmoteList(Message message){
         serverID = message.getChannelReceiver().getServer().getId();
         emojis = api.getServerById(serverID).getCustomEmojis();
+        EmoteCounter app = new EmoteCounter(api);
         for (CustomEmoji e: emojis) {
-            insert(e.getName(), serverID, 0);
+            app.insert(serverID, e.getName(), 0);
         }
     }
 
