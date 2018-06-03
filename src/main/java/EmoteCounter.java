@@ -57,12 +57,30 @@ public class EmoteCounter{
         String sql = "INSERT INTO emotes (serverid, emote, timesUsed)\n" +
                     "VALUES ('" + id + "','" + emote + "'," + timesUsed + ");";
         try {
+            remove(id, emote);
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void remove(String id, String emotes){
+
+        String sql = "DELETE FROM emotes " +
+                    "WHERE serverid = '" + id + "' AND emote = '" + emotes + "'";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setQueryTimeout(10);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update(){
+        
     }
 
     /**
