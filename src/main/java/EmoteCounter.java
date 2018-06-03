@@ -4,14 +4,12 @@ import de.btobastian.javacord.entities.Channel;
 import de.btobastian.javacord.entities.CustomEmoji;
 import de.btobastian.javacord.entities.message.Message;
 
-import java.sql.PreparedStatement;
+import java.awt.*;
+import java.sql.*;
 import java.util.*;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 public class EmoteCounter{
 
@@ -120,17 +118,26 @@ public class EmoteCounter{
      * @param message
      */
     public void messageWithEmote(Message message) {
-        if (msgCount == 0) {
-            ResetEmoteList(message);
-            msgCount++;
-        } else {
-            for (String word : message.getContent().split(":")) {
-                if(countEmotes.containsKey(word)){
-                    countEmotes.replace(word, countEmotes.get(word), countEmotes.get(word) + 1);
+        String id = message.getChannelReceiver().getServer().getId();
+        String sql = "SELECT serverid FROM servers " +
+                "WHERE serverid = " + id;
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            try(ResultSet rs = pstmt.executeQuery()){
+                if(rs.next()){
+                    boolean found = rs.getBoolean(1);
+                    if (found){
+                        for (String word : message.getContent().split(":")) {
+                            update(id, word);
+                        }
+                    } else {
+                        ResetEmoteList(message);
+                    }
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
     }
 
     /**
