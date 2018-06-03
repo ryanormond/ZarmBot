@@ -52,7 +52,7 @@ public class EmoteCounter{
         ResetEmoteList(objMsg);
     }
 
-    public void insert(String id, String emote, int timesUsed) {
+    private void insert(String id, String emote, int timesUsed) {
 
         String sql = "INSERT INTO emotes (serverid, emote, timesUsed)\n" +
                     "VALUES ('" + id + "','" + emote + "'," + timesUsed + ");";
@@ -66,8 +66,7 @@ public class EmoteCounter{
         }
     }
 
-    public void remove(String id, String emotes){
-
+    private void remove(String id, String emotes){
         String sql = "DELETE FROM emotes " +
                     "WHERE serverid = '" + id + "' AND emote = '" + emotes + "'";
         try {
@@ -79,8 +78,17 @@ public class EmoteCounter{
         }
     }
 
-    public void update(){
-        
+    private void update(String id, String emotes){
+        String sql = "UPDATE emotes " +
+                "SET timesUsed = timesUsed + " + 1 +
+                "WHERE serverid = '" + id + "' AND emote = '" + emotes + "'";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setQueryTimeout(10);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -100,8 +108,11 @@ public class EmoteCounter{
     /**
      * resets a single emote
      */
-    public void ResetSingleEmote(){
-        //reset a single emote from the json file
+    public void resetSingleEmote(Message message, Channel objChannel){
+        String id = message.getChannelReceiver().getServer().getId();
+        String[] str = message.toString().split(":");
+        String emote = str[2];
+        insert(id, emote, 0);
     }
 
     /**

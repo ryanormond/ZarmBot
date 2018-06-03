@@ -31,12 +31,13 @@ public class MyListener implements MessageCreateListener {
             {
                 //Commands Class
                 put("Zping", () -> Commands.ping(objChannel)); //simple ping pong test
-                put("Zhelp", () -> Commands.help(objChannel)); //simple ping pong test
+                put("Zhelp", () -> Commands.help(objChannel)); //Displays the help page and commands list
                 //EmoteCounter Class
                 put("Zinit", () -> eCounter.BotInitializer(objMsg, objChannel)); //Initializes anything the bot needs
-                put("Zmue", () -> eCounter.mostUsedEmote(objChannel)); //most used commands
-                put("Zlue", () -> eCounter.leastUsedEmote(objChannel)); //least used commands
-                put("Zrec", () -> eCounter.resetEmoteCounter(objMsg, objChannel)); //reset command counter
+                put("Zmue", () -> eCounter.mostUsedEmote(objChannel)); //most used emote
+                put("Zlue", () -> eCounter.leastUsedEmote(objChannel)); //least used emote
+                put("Zrec", () -> eCounter.resetEmoteCounter(objMsg, objChannel)); //reset emote counter
+                put("Zreset", () -> eCounter.resetSingleEmote(objMsg, objChannel)); //reset a single emote
                 put("Zallemotes", () -> {//displays every emote in order of times used
                     try {
                         eCounter.allEmotes(objChannel);
@@ -99,7 +100,6 @@ public class MyListener implements MessageCreateListener {
             if (!message.getAuthor().isBot()) {
                 eCounter.messageWithEmote(message);
             }
-
         }
     }
 }
