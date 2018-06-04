@@ -7,6 +7,8 @@ Adding some small scaling capability to support more servers, SQLite is being ad
 to data used by the bot.
 Limitations of SQLite are understood and further implementations will address this.
 
+Branch - sqlite
+
 ## Future Implementations
 - Fullscale MYSQL database
 - Better hosting
