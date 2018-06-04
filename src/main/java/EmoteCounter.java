@@ -173,20 +173,22 @@ public class EmoteCounter{
 
 
     /**
-     *
+     * Selects the most used emote of the server where request was made
      * @param objChannel channel the message was posted in
      */
     public void mostUsedEmote(Channel objChannel) {
-        if (!countEmotes.isEmpty()){
-            Collection c = countEmotes.values();
-            for (String key: countEmotes.keySet()) {
-                if (Collections.max(c) == countEmotes.get(key)) {
-                    objChannel.sendMessage("Oh my!" + " \n " +
-                            ":" + key + ": " + "has been used " + Collections.max(c) + " times!");
-                }
-            }
-        } else {
-            objChannel.sendMessage("Please use command: Zinit  first to setup all emote related commands");
+        String sql = "SELECT emote FROM emotes " +
+                "WHERE timesUsed = (SELECT max(timesUsed) FROM emotes)";
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setQueryTimeout(10);
+            ResultSet result = pstmt.executeQuery();
+            objChannel.sendMessage("Oh my!" + " \n " +
+                    ":" + result + ": " + "has been used many times!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            objChannel.sendMessage("Somthing went wrong");
         }
     }
 
