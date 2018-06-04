@@ -177,15 +177,17 @@ public class EmoteCounter{
      * @param objChannel channel the message was posted in
      */
     public void mostUsedEmote(Channel objChannel) {
-        String sql = "SELECT emote FROM emotes " +
-                "WHERE timesUsed = (SELECT max(timesUsed) FROM emotes)";
+        String sql = "SELECT emote, timesUsed FROM emotes" +
+                " ORDER BY timesUsed LIMIT 1";
         PreparedStatement pstmt = null;
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             ResultSet result = pstmt.executeQuery();
+            String emote = result.getString("emote");
+            int times = result.getInt("timesUsed");
             objChannel.sendMessage("Oh my!" + " \n " +
-                    ":" + result + ": " + "has been used many times!");
+                    ":" + emote + ": " + "has been used " + times + " times!");
         } catch (SQLException e) {
             e.printStackTrace();
             objChannel.sendMessage("Somthing went wrong");
