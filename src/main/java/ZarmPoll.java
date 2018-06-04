@@ -21,8 +21,8 @@ public class ZarmPoll {
     /**
      * Formats the message into appropriate strings
      * Posts the strawpoll URL to teh channel from where eth request was made
-     * @param objMsg
-     * @param objChannel
+     * @param objMsg message from discord
+     * @param objChannel channel the message was posted in
      * @throws IOException
      */
     public void strawpoll(Message objMsg, Channel objChannel) throws IOException {

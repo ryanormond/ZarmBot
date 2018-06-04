@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 
+/**
+ *
+ */
 public class EmoteCounter{
 
     private final DiscordAPI api;
@@ -20,6 +23,10 @@ public class EmoteCounter{
     private String serverID;
     private int msgCount;
 
+    /**
+     *  Constructor
+     * @param api connection to discord api
+     */
     public EmoteCounter(DiscordAPI api) {
         this.api = api;
         msgCount = 0;
@@ -27,6 +34,10 @@ public class EmoteCounter{
     }
 
 
+    /**
+     * Creates connection to the database
+     * @return returns connection to SQLite database
+     */
     private Connection connect() {
         Connection connection = null;
         try {
@@ -42,14 +53,21 @@ public class EmoteCounter{
 
     /**
      * Initialises everything for a server
-     * @param objMsg
-     * @param objChannel
+     * @param objMsg message from discord
+     * @param objChannel channel the message was posted in
      */
     public void BotInitializer(Message objMsg, Channel objChannel) {
         objChannel.sendMessage("Initialized : setup");
         ResetEmoteList(objMsg);
     }
 
+    /**
+     * Inserts a NEW entry into the database
+     * Replaces existing row if already present
+     * @param id server id
+     * @param emote emote name
+     * @param timesUsed how many times used
+     */
     private void insert(String id, String emote, int timesUsed) {
 
         String sql = "INSERT INTO emotes (serverid, emote, timesUsed)\n" +
@@ -64,6 +82,12 @@ public class EmoteCounter{
         }
     }
 
+    /**
+     * Removes a selected row from database
+     * Used to remove emotes individually
+     * @param id server id
+     * @param emotes name of emote
+     */
     private void remove(String id, String emotes){
         String sql = "DELETE FROM emotes " +
                     "WHERE serverid = '" + id + "' AND emote = '" + emotes + "'";
@@ -76,6 +100,11 @@ public class EmoteCounter{
         }
     }
 
+    /**
+     * Updates a row in the database
+     * @param id server id
+     * @param emotes emote name
+     */
     private void update(String id, String emotes){
         String sql = "UPDATE emotes " +
                 "SET timesUsed = timesUsed + " + 1 +
@@ -92,7 +121,7 @@ public class EmoteCounter{
     /**
      * Changes current emote list to empty and repopulates
      * with all fresh emotes.
-     * @param message
+     * @param message message from discord
      */
     public void ResetEmoteList(Message message){
         serverID = message.getChannelReceiver().getServer().getId();
@@ -104,7 +133,9 @@ public class EmoteCounter{
     }
 
     /**
-     * resets a single emote
+     * Resets a single emote
+     * @param message message from discord
+     * @param objChannel channel the message was posted in
      */
     public void resetSingleEmote(Message message, Channel objChannel){
         String id = message.getChannelReceiver().getServer().getId();
@@ -115,7 +146,7 @@ public class EmoteCounter{
 
     /**
      * Handles message with emote/s
-     * @param message
+     * @param message message from discord
      */
     public void messageWithEmote(Message message) {
         String id = message.getChannelReceiver().getServer().getId();
@@ -140,8 +171,10 @@ public class EmoteCounter{
         }
     }
 
+
     /**
-     * Shows the most used emote on the server
+     *
+     * @param objChannel channel the message was posted in
      */
     public void mostUsedEmote(Channel objChannel) {
         if (!countEmotes.isEmpty()){
@@ -159,7 +192,7 @@ public class EmoteCounter{
 
     /**
      * Shows the least used emote on the server
-     * @param objChannel
+     * @param objChannel channel the message was posted in
      */
     public void leastUsedEmote(Channel objChannel) {
         if(!countEmotes.isEmpty()){
@@ -179,7 +212,7 @@ public class EmoteCounter{
      * Sorts the emotes by value order and sends ot the channel.
      * Somehow this works.
      * if complications occur with thread.sleep() .get() can be added to the end of .sendMessage("")
-     * @param objChannel
+     * @param objChannel channel the message was posted in
      */
     public void allEmotes(Channel objChannel) throws ExecutionException, InterruptedException {
         Set<Entry<String, Integer>> set = countEmotes.entrySet();
@@ -201,7 +234,7 @@ public class EmoteCounter{
     /**
      * Shows the top 5 emotes on the server
      * thread sleep is used as order can sometimes be out of sync.
-     * @param objChannel
+     * @param objChannel channel the message was posted in
      * @throws ExecutionException
      * @throws InterruptedException
      */
@@ -227,7 +260,7 @@ public class EmoteCounter{
     /**
      * Shows the bottom 5 emotes on the server
      * thread sleep is used as order can sometimes be out of sync.
-     * @param objChannel
+     * @param objChannel channel the message was posted in
      */
     public void bottom5emotes(Channel objChannel){
         Set<Entry<String, Integer>> set = countEmotes.entrySet();
@@ -251,8 +284,8 @@ public class EmoteCounter{
 
     /**
      * Resets the counter for emotes
-     * @param message
-     * @param objChannel
+     * @param message message from discord
+     * @param objChannel channel the message was posted in
      */
     public void resetEmoteCounter(Message message, Channel objChannel) {
         if(message.getAuthor().getId().equals(api.getServerById(serverID).getOwnerId()) ){
