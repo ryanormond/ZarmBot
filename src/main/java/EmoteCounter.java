@@ -77,6 +77,20 @@ public class EmoteCounter{
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             pstmt.executeUpdate();
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertNewServer(String id, String owner){
+        String sql = "INSERT INTO servers (serverid, owner)" +
+                    " VALUES ('" + id + "','" + owner + "');";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setQueryTimeout(10);
+            pstmt.executeUpdate();
+            pstmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -113,6 +127,7 @@ public class EmoteCounter{
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             pstmt.executeUpdate();
+            pstmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -152,14 +167,15 @@ public class EmoteCounter{
         String id = message.getChannelReceiver().getServer().getId();
         String sql = "SELECT serverid FROM servers " +
                 "WHERE serverid = " + id;
-        System.out.println(id);
         try {
             PreparedStatement  pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             ResultSet rs = pstmt.executeQuery();
+            pstmt.close();
             if (!rs.next()){
-                System.out.println("rs has a next");
+                System.out.println("rs doesnt have a next");
                 ResetEmoteList(message);
+                insertNewServer(id, message.getChannelReceiver().getServer().getOwnerId());
             }
 
         } catch (SQLException e) {
@@ -185,6 +201,7 @@ public class EmoteCounter{
             pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             ResultSet result = pstmt.executeQuery();
+            pstmt.close();
             String emote = result.getString("emote");
             int times = result.getInt("timesUsed");
             objChannel.sendMessage("Oh my!" + " \n " +
