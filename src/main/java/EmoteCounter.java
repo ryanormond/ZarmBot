@@ -77,20 +77,7 @@ public class EmoteCounter{
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             pstmt.executeUpdate();
-            pstmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
-    private void insertNewServer(String id, String owner){
-        String sql = "INSERT INTO servers (serverid, owner)" +
-                    " VALUES ('" + id + "','" + owner + "');";
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setQueryTimeout(10);
-            pstmt.executeUpdate();
-            pstmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -104,7 +91,7 @@ public class EmoteCounter{
      */
     private void remove(String id, String emotes){
         String sql = "DELETE FROM emotes " +
-                    "WHERE serverid = '" + id + "' AND emote = '" + emotes + "'";
+                "WHERE serverid = '" + id + "' AND emote = '" + emotes + "'";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
@@ -112,6 +99,28 @@ public class EmoteCounter{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Adds the server if it doesnt exist to the database
+     * @param id servers id
+     * @param owner owner of the discord servers id
+     */
+    private void insertNewServer(String id, String owner){
+        String sql = "INSERT INTO servers (serverid, owner)" +
+                    " VALUES ('" + id + "','" + owner + "');";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setQueryTimeout(10);
+            pstmt.executeUpdate();
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeServer(String id, String owner){
+
     }
 
     /**
@@ -166,18 +175,21 @@ public class EmoteCounter{
     public void messageWithEmote(Message message) {
         String id = message.getChannelReceiver().getServer().getId();
         String sql = "SELECT serverid FROM servers " +
-                "WHERE serverid = " + id;
+                "WHERE serverid = '" + id + "'";
         try {
-            PreparedStatement  pstmt = conn.prepareStatement(sql);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             ResultSet rs = pstmt.executeQuery();
-            pstmt.close();
-            if (!rs.next()){
+            String compareid = "";
+            if (rs.next()) {
+                compareid = rs.getString("serverid");
+            }
+            if (!id.equals(compareid)) {
                 System.out.println("rs doesnt have a next");
                 ResetEmoteList(message);
                 insertNewServer(id, message.getChannelReceiver().getServer().getOwnerId());
             }
-
+            pstmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -201,11 +213,12 @@ public class EmoteCounter{
             pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             ResultSet result = pstmt.executeQuery();
-            pstmt.close();
+
             String emote = result.getString("emote");
             int times = result.getInt("timesUsed");
             objChannel.sendMessage("Oh my!" + " \n " +
                     ":" + emote + ": " + "has been used " + times + " times!");
+            pstmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
             objChannel.sendMessage("Somthing went wrong");
