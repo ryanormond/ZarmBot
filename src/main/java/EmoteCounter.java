@@ -107,7 +107,7 @@ public class EmoteCounter{
      */
     private void update(String id, String emotes){
         String sql = "UPDATE emotes " +
-                "SET timesUsed = timesUsed + " + 1 +
+                "SET timesUsed = timesUsed + 1 " +
                 "WHERE serverid = '" + id + "' AND emote = '" + emotes + "'";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -152,22 +152,21 @@ public class EmoteCounter{
         String id = message.getChannelReceiver().getServer().getId();
         String sql = "SELECT serverid FROM servers " +
                 "WHERE serverid = " + id;
+        System.out.println(id);
         try {
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            try(ResultSet rs = pstmt.executeQuery()){
-                if(rs.next()){
-                    boolean found = rs.getBoolean(1);
-                    if (found){
-                        for (String word : message.getContent().split(":")) {
-                            update(id, word);
-                        }
-                    } else {
-                        ResetEmoteList(message);
-                    }
-                }
+            PreparedStatement  pstmt = conn.prepareStatement(sql);
+            pstmt.setQueryTimeout(10);
+            ResultSet rs = pstmt.executeQuery();
+            if (!rs.next()){
+                System.out.println("rs has a next");
+                ResetEmoteList(message);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        for (String word : message.getContent().split(":")) {
+            update(id, word);
         }
     }
 
@@ -177,8 +176,10 @@ public class EmoteCounter{
      * @param objChannel channel the message was posted in
      */
     public void mostUsedEmote(Channel objChannel) {
+        String id = objChannel.getServer().getId();
         String sql = "SELECT emote, timesUsed FROM emotes" +
-                " ORDER BY timesUsed LIMIT 1";
+                " WHERE serverid = " + id +
+                " ORDER BY timesUsed DESC LIMIT 1";
         PreparedStatement pstmt = null;
         try {
             pstmt = conn.prepareStatement(sql);
