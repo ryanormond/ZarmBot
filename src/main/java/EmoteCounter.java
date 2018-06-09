@@ -69,7 +69,6 @@ public class EmoteCounter{
      * @param timesUsed how many times used
      */
     private void insert(String id, String emote, int timesUsed) {
-
         String sql = "INSERT INTO emotes (serverid, emote, timesUsed)\n" +
                     "VALUES ('" + id + "','" + emote + "'," + timesUsed + ");";
         try {
@@ -77,7 +76,6 @@ public class EmoteCounter{
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             pstmt.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -162,10 +160,15 @@ public class EmoteCounter{
      * @param objChannel channel the message was posted in
      */
     public void resetSingleEmote(Message message, Channel objChannel){
-        String id = message.getChannelReceiver().getServer().getId();
-        String[] str = message.toString().split(":");
-        String emote = str[2];
-        insert(id, emote, 0);
+        if (message.getAuthor().getId().equals(objChannel.getServer().getOwnerId())){
+            String id = message.getChannelReceiver().getServer().getId();
+            String[] str = message.toString().split(":");
+            String emote = str[2];
+            insert(id, emote, 0);
+            objChannel.sendMessage(emote + " has been reset succesfully");
+        } else {
+            objChannel.sendMessage("You don't have permission to do that");
+        }
     }
 
     /**
@@ -185,7 +188,6 @@ public class EmoteCounter{
                 compareid = rs.getString("serverid");
             }
             if (!id.equals(compareid)) {
-                System.out.println("rs doesnt have a next");
                 ResetEmoteList(message);
                 insertNewServer(id, message.getChannelReceiver().getServer().getOwnerId());
             }
