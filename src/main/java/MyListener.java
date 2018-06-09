@@ -38,33 +38,10 @@ public class MyListener implements MessageCreateListener {
                 put("Zlue", () -> eCounter.leastUsedEmote(objChannel)); //least used emote
                 put("Zrec", () -> eCounter.resetEmoteCounter(objMsg, objChannel)); //reset emote counter
                 put("Zreset", () -> eCounter.resetSingleEmote(objMsg, objChannel)); //reset a single emote
-                put("Zallemotes", () -> {//displays every emote in order of times used
-                    try {
-                        eCounter.allEmotes(objChannel);
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                        objChannel.sendMessage("Somethings not right! I didn't execute this correctly *confused*");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        objChannel.sendMessage("Sorry i got Interrupted, could u do it again");
-                    }
-                });
-
-                put("Ztop5", () -> {
-                    try {
-                        eCounter.top5emotes(objChannel);
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                        objChannel.sendMessage("Somethings not right! I didn't execute this correctly *confused*");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        objChannel.sendMessage("Sorry i got Interrupted, could u do it again");
-                    }
-                });
-                //displays bottom 5 used emotes
-                put("Zbot5", () -> eCounter.bottom5emotes(objChannel));
-                //Strawpoll Class
-                // calls to create/retrieve a strawpoll
+                put("Zallemotes", () -> eCounter.allEmotes(objChannel));//displays every emote in order of times used
+                put("Ztop5", () -> eCounter.top5emotes(objChannel)); //displays top 5 emotes
+                put("Zbot5", () -> eCounter.bottom5emotes(objChannel));//displays bottom 5 used emotes
+                //Strawpoll Class, calls to create/retrieve a strawpoll
                 put("Zpoll", () -> {
                     try {
                         zPoll.strawpoll(objMsg,objChannel);

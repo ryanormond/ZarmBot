@@ -10,6 +10,8 @@ import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  *
@@ -18,10 +20,7 @@ public class EmoteCounter{
 
     private final DiscordAPI api;
     private static Connection conn;
-    private HashMap<String, Integer> countEmotes;
     private Collection<CustomEmoji> emojis;
-    private String serverID;
-    private int msgCount;
 
     /**
      *  Constructor
@@ -29,7 +28,6 @@ public class EmoteCounter{
      */
     public EmoteCounter(DiscordAPI api) {
         this.api = api;
-        msgCount = 0;
         this.conn = this.connect();
     }
 
@@ -146,7 +144,7 @@ public class EmoteCounter{
      * @param message message from discord
      */
     public void ResetEmoteList(Message message){
-        serverID = message.getChannelReceiver().getServer().getId();
+        String serverID = message.getChannelReceiver().getServer().getId();
         emojis = api.getServerById(serverID).getCustomEmojis();
         EmoteCounter app = new EmoteCounter(api);
         for (CustomEmoji e: emojis) {
@@ -223,7 +221,7 @@ public class EmoteCounter{
             pstmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            objChannel.sendMessage("Somthing went wrong");
+            objChannel.sendMessage("Im sorry somthing went wrong");
         }
     }
 
@@ -232,16 +230,28 @@ public class EmoteCounter{
      * @param objChannel channel the message was posted in
      */
     public void leastUsedEmote(Channel objChannel) {
-        if(!countEmotes.isEmpty()){
-            Collection c = countEmotes.values();
-            for (String key: countEmotes.keySet()) {
-                if (Collections.min(c) == countEmotes.get(key)) {
-                    objChannel.sendMessage("People dont use this emote much" + " \n " +
-                            ":" + key + ": " + "has only been used " + Collections.min(c) + " times!");
-                }
+        String id = objChannel.getServer().getId();
+        String sql = "SELECT emote, timesUsed FROM emotes" +
+                " WHERE serverid = " + id +
+                " ORDER BY timesUsed ASC LIMIT 1";
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setQueryTimeout(10);
+            ResultSet result = pstmt.executeQuery();
+
+            String emote = result.getString("emote");
+            int times = result.getInt("timesUsed");
+            if(times == 0 || times == 1){
+                objChannel.sendMessage( "Well " + emote + " has never been used!");
+            } else {
+                objChannel.sendMessage("People dont use " +
+                        ":" + emote + ": " + "very much, only " + times + " times!");
             }
-        } else {
-            objChannel.sendMessage("Please use command: Zinit  first to setup all emote related commands");
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            objChannel.sendMessage("Im sorry somthing went wrong");
         }
     }
 
@@ -251,21 +261,24 @@ public class EmoteCounter{
      * if complications occur with thread.sleep() .get() can be added to the end of .sendMessage("")
      * @param objChannel channel the message was posted in
      */
-    public void allEmotes(Channel objChannel) throws ExecutionException, InterruptedException {
-        Set<Entry<String, Integer>> set = countEmotes.entrySet();
-        List<Entry<String, Integer>> list = new ArrayList<>(set);
-        Collections.sort( list, (o1, o2) -> (o2.getValue()).compareTo( o1.getValue() ));
-        String emotes = "";
-        if(!countEmotes.isEmpty()){
-            objChannel.sendMessage("Heres the list: ").get();
-            for(Map.Entry<String, Integer> entry:list){
-                emotes = (emotes + ":" + entry.getKey() + ": > " + entry.getValue() + ",  ");
+    public void allEmotes(Channel objChannel) {
+        String id = objChannel.getServer().getId();
+        String sql = "SELECT emote, timesUsed FROM emotes" +
+                " WHERE serverid = " + id +
+                " ORDER BY timesUsed DESC";
+        PreparedStatement pstmt;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setQueryTimeout(10);
+            ResultSet result = pstmt.executeQuery();
+            while(result.next()){
+                String emote = result.getString("emote");
+                String timesUsed = result.getString("timesUsed");
+                objChannel.sendMessage(emote + " : " + timesUsed);
             }
-            objChannel.sendMessage(emotes);
-        } else {
-            objChannel.sendMessage("Please use command: Zinit  first to setup all emote related commands");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
     }
 
     /**
@@ -275,22 +288,23 @@ public class EmoteCounter{
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public void top5emotes(Channel objChannel) throws ExecutionException, InterruptedException {
-        Set<Entry<String, Integer>> set = countEmotes.entrySet();
-        List<Entry<String, Integer>> list = new ArrayList<>(set);
-        Collections.sort( list, (o1, o2) -> (o2.getValue()).compareTo( o1.getValue() ));
-        if(!countEmotes.isEmpty()){
-            for(int i = 0; i < 5; i++){
-                objChannel.sendMessage(":" + list.get(i) + ":" );
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    objChannel.sendMessage("hmm i broke something... \n might need to try again");
-                }
+    public void top5emotes(Channel objChannel){
+        String id = objChannel.getServer().getId();
+        String sql = "SELECT emote, timesUsed FROM emotes" +
+                " WHERE serverid = " + id +
+                " ORDER BY timesUsed DESC LIMIT 5";
+        PreparedStatement pstmt;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setQueryTimeout(10);
+            ResultSet result = pstmt.executeQuery();
+            while(result.next()){
+                String emote = result.getString("emote");
+                String timesUsed = result.getString("timesUsed");
+                objChannel.sendMessage(emote + " : " + timesUsed);
             }
-        } else {
-            objChannel.sendMessage("Please use command: Zinit  first to setup all emote related commands");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -300,22 +314,22 @@ public class EmoteCounter{
      * @param objChannel channel the message was posted in
      */
     public void bottom5emotes(Channel objChannel){
-        Set<Entry<String, Integer>> set = countEmotes.entrySet();
-        List<Entry<String, Integer>> list = new ArrayList<>(set);
-        Collections.sort( list, (o1, o2) -> (o2.getValue()).compareTo( o1.getValue() ));
-        Collections.reverse(list);
-        if(!countEmotes.isEmpty()){
-            for(int i = 0; i < 5; i++){
-                objChannel.sendMessage(i+"." + list.get(i));
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    objChannel.sendMessage("hmm i broke something... \n might need to try again");
-                }
+        String id = objChannel.getServer().getId();
+        String sql = "SELECT emote, timesUsed FROM emotes" +
+                " WHERE serverid = " + id +
+                " ORDER BY timesUsed ASC LIMIT 5";
+        PreparedStatement pstmt;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setQueryTimeout(10);
+            ResultSet result = pstmt.executeQuery();
+            while(result.next()){
+                String emote = result.getString("emote");
+                String timesUsed = result.getString("timesUsed");
+                objChannel.sendMessage(emote + " : " + timesUsed);
             }
-        } else {
-            objChannel.sendMessage("Please use command: Zinit  first to setup all emote related commands");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -325,6 +339,7 @@ public class EmoteCounter{
      * @param objChannel channel the message was posted in
      */
     public void resetEmoteCounter(Message message, Channel objChannel) {
+        String serverID = objChannel.getServer().getId();
         if(message.getAuthor().getId().equals(api.getServerById(serverID).getOwnerId()) ){
             ResetEmoteList(message);
             objChannel.sendMessage("Emotes are reset" + message.getAuthor().getMentionTag());
