@@ -43,6 +43,8 @@ public class Commands {
                         "This can be useful if you have max custom emotes on the server and " +
                         "cant decide which emote to replace." +
                         "\n \n " +
+        " ***Zreset :emote:*** : Reset a single emote back" +
+                        " \n \n " +
         "***Zallemotes*** : Shows every custom emote on the server and how many times they have been used!" +
                         "\n \n " +
         "***Ztop5*** : Displays the top 5 most used emotes" +

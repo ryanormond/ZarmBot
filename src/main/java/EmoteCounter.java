@@ -160,10 +160,17 @@ public class EmoteCounter{
     public void resetSingleEmote(Message message, Channel objChannel){
         if (message.getAuthor().getId().equals(objChannel.getServer().getOwnerId())){
             String id = message.getChannelReceiver().getServer().getId();
-            String[] str = message.toString().split(":");
-            String emote = str[2];
-            insert(id, emote, 0);
-            objChannel.sendMessage(emote + " has been reset succesfully");
+            String[] str = message.toString().split("[:()<>\\s]");
+            try{
+                String emote = str[5];
+                int num = Integer.parseInt(str[8]);
+                insert(id, emote, num - 1);
+                objChannel.sendMessage(emote + " has been reset succesfully");
+            } catch(ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex){
+                objChannel.sendMessage( "Wrong use of command\n" +
+                                            "Format should be e.g. **Zreset :emote: 50** " +
+                                            "(sets the times the emote was used to 50)");
+            }
         } else {
             objChannel.sendMessage("You don't have permission to do that");
         }
@@ -242,8 +249,8 @@ public class EmoteCounter{
 
             String emote = result.getString("emote");
             int times = result.getInt("timesUsed");
-            if(times == 0 || times == 1){
-                objChannel.sendMessage( "Well " + emote + " has never been used!");
+            if(times == 0){
+                objChannel.sendMessage( ":" + emote + ": has never been used!");
             } else {
                 objChannel.sendMessage("People dont use " +
                         ":" + emote + ": " + "very much, only " + times + " times!");
