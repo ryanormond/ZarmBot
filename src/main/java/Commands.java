@@ -43,7 +43,9 @@ public class Commands {
                         "This can be useful if you have max custom emotes on the server and " +
                         "cant decide which emote to replace." +
                         "\n \n " +
-        " ***Zreset :emote:*** : Reset a single emote back" +
+        " ***Zreset :emote: value*** : Reset a single emote to a set value\n" +
+                        "The structuere must adhere to this example: Zreset :wave: 20\n" +
+                        "This sets the emote :wave: times used to 20" +
                         " \n \n " +
         "***Zallemotes*** : Shows every custom emote on the server and how many times they have been used!" +
                         "\n \n " +

@@ -164,8 +164,23 @@ public class EmoteCounter{
             try{
                 String emote = str[5];
                 int num = Integer.parseInt(str[8]);
-                insert(id, emote, num - 1);
-                objChannel.sendMessage(emote + " has been reset succesfully");
+                String sql = "SELECT timesUsed FROM emotes " +
+                        "WHERE serverid = '" + id + "' AND emote = '" + emote + "'";
+                try {
+                    PreparedStatement pstmt = conn.prepareStatement(sql);
+                    pstmt.setQueryTimeout(10);
+                    ResultSet rs = pstmt.executeQuery();
+                    int previous = rs.getInt("timesUsed");
+                    if (num < previous){
+                        insert(id, emote, num - 1);
+                        objChannel.sendMessage(emote + " has been reset succesfully");
+                    } else {
+                        objChannel.sendMessage( "New Value must be less than old value");
+                    }
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             } catch(ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex){
                 objChannel.sendMessage( "Wrong use of command\n" +
                                             "Format should be e.g. **Zreset :emote: 50** " +
