@@ -1,6 +1,8 @@
 # ZarmBot
 ### Discord Bot
 ### Currently under development
+This was mainly made for just a friends and my server but is becoming more popular, as such development may continue.
+
 Current scaling of bot capability underway.
 Previously used for research into some possibilities of the bots functions, now being developed into a full fledged distributable bot.
 Adding some small scaling capability to support more servers, SQLite is being added for hard storage and better access
