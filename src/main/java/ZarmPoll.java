@@ -80,6 +80,7 @@ public class ZarmPoll {
      *  }
      *  Creates the request to make a new poll
      * @throws IOException
+     * @param objMsg
      */
     public void createPoll() throws IOException {
         HttpsURLConnection con = createConnection("POST");   //create connection with request of POST
