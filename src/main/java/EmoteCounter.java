@@ -293,11 +293,13 @@ public class EmoteCounter{
             pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             ResultSet result = pstmt.executeQuery();
+            String allEmotes = "";
             while(result.next()){
                 String emote = result.getString("emote");
                 String timesUsed = result.getString("timesUsed");
-                objChannel.sendMessage(emote + " : " + timesUsed);
+                allEmotes = allEmotes + emote + " > " + timesUsed + ",   ";
             }
+            objChannel.sendMessage(allEmotes);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -320,11 +322,15 @@ public class EmoteCounter{
             pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             ResultSet result = pstmt.executeQuery();
+            String allEmotes = "";
+            int num = 1;
             while(result.next()){
                 String emote = result.getString("emote");
                 String timesUsed = result.getString("timesUsed");
-                objChannel.sendMessage(emote + " : " + timesUsed);
+                allEmotes = allEmotes + "#" + num + " " + emote + " > " + timesUsed + ",   ";
+                num++;
             }
+            objChannel.sendMessage(allEmotes);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -345,11 +351,15 @@ public class EmoteCounter{
             pstmt = conn.prepareStatement(sql);
             pstmt.setQueryTimeout(10);
             ResultSet result = pstmt.executeQuery();
+            String allEmotes = "";
+            int num = 1;
             while(result.next()){
                 String emote = result.getString("emote");
                 String timesUsed = result.getString("timesUsed");
-                objChannel.sendMessage(emote + " : " + timesUsed);
+                allEmotes = allEmotes + "#" + num + " " + emote + " > " + timesUsed + ",   ";
+                num++;
             }
+            objChannel.sendMessage(allEmotes);
         } catch (SQLException e) {
             e.printStackTrace();
         }
