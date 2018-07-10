@@ -220,7 +220,6 @@ public class EmoteCounter{
         }
     }
 
-
     /**
      * Selects the most used emote of the server where request was made
      * @param objChannel channel the message was posted in
