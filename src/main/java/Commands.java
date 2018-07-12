@@ -43,16 +43,22 @@ public class Commands {
                         "This can be useful if you have max custom emotes on the server and " +
                         "cant decide which emote to replace." +
                         "\n \n " +
-        " ***Zreset :emote: value*** : Reset a single emote to a set value\n" +
-                        "The structuere must adhere to this example: Zreset :wave: 20\n" +
-                        "This sets the emote :wave: times used to 20" +
-                        " \n \n " +
         "***Zallemotes*** : Shows every custom emote on the server and how many times they have been used!" +
                         "\n \n " +
         "***Ztop5*** : Displays the top 5 most used emotes" +
                         "\n \n" +
         "***Zbot5*** : Displays the bottom 5 least used emotes" +
                         "\n \n" +
+        ">>> Commands only server owner can perform" +
+                        "\n" +
+        "***Zadd :emote:*** : Add an emote to the list" +
+                        "\n \n" +
+        "***Zremove :emote:*** : Add an emote to the list" +
+                        "\n \n" +
+        "***Zreset :emote: value*** : Reset a single emote to a set value\n" +
+                        "The structuere must adhere to this example: Zreset :wave: 20\n" +
+                        "This sets the emote :wave: times used to 20" +
+                        " \n \n " +
         ">>> Commands to do with Polls/Voting" +
                         "\n" +
         "***Zpoll*** : Creates a new StrawPoll for voting purposes, " +

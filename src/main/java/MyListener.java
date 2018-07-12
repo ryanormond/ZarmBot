@@ -41,6 +41,8 @@ public class MyListener implements MessageCreateListener {
                 put("Zallemotes", () -> eCounter.allEmotes(objChannel));//displays every emote in order of times used
                 put("Ztop5", () -> eCounter.top5emotes(objChannel)); //displays top 5 emotes
                 put("Zbot5", () -> eCounter.bottom5emotes(objChannel));//displays bottom 5 used emotes
+                put("Zadd", () -> eCounter.addEmote(objMsg, objChannel));//add an emote
+                put("Zremove", () -> eCounter.removeEmote(objMsg, objChannel));//add an emote
                 //Strawpoll Class, calls to create/retrieve a strawpoll
                 put("Zpoll", () -> {
                     try {

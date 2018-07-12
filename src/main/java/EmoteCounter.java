@@ -238,7 +238,7 @@ public class EmoteCounter{
             String emote = result.getString("emote");
             int times = result.getInt("timesUsed");
             objChannel.sendMessage("Oh my!" + " \n " +
-                    ":" + emote + ": " + "has been used " + times + " times!");
+                    "\\:" + emote + "\\: " + "has been used " + times + " times!");
             pstmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -267,7 +267,7 @@ public class EmoteCounter{
                 objChannel.sendMessage( ":" + emote + ": has never been used!");
             } else {
                 objChannel.sendMessage("People dont use " +
-                        ":" + emote + ": " + "very much, only " + times + " times!");
+                        "\\:" + emote + "\\: " + "very much, only " + times + " times!");
             }
             pstmt.close();
         } catch (SQLException e) {
@@ -296,7 +296,7 @@ public class EmoteCounter{
             while(result.next()){
                 String emote = result.getString("emote");
                 String timesUsed = result.getString("timesUsed");
-                allEmotes = allEmotes + emote + " > " + timesUsed + ",   ";
+                allEmotes = allEmotes + "\\:" + emote + "\\:" + " > " + timesUsed + ",   ";
             }
             objChannel.sendMessage(allEmotes);
         } catch (SQLException e) {
@@ -374,6 +374,45 @@ public class EmoteCounter{
         if(message.getAuthor().getId().equals(api.getServerById(serverID).getOwnerId()) ){
             ResetEmoteList(message);
             objChannel.sendMessage("Emotes are reset" + message.getAuthor().getMentionTag());
+        } else {
+            objChannel.sendMessage(message.getAuthor().getMentionTag() +
+                    " you don't have permission to do that.");
+        }
+    }
+
+    /**
+     *
+     */
+    public void addEmote(Message message, Channel objChannel){
+        String serverID = objChannel.getServer().getId();
+        if(message.getAuthor().getId().equals(api.getServerById(serverID).getOwnerId()) ){
+            System.out.println(message.toString());
+            if (message.getContent().matches("Zadd\\s:[a-zA-Z]+:")){
+                String[] str = message.toString().split(":");
+                insert(serverID, str[2], 0);
+                objChannel.sendMessage("Added " + str[2] + " to my list" + message.getAuthor().getMentionTag());
+            } else {
+                objChannel.sendMessage("Please use the format > Zadd :emote:");
+            }
+        } else {
+            objChannel.sendMessage(message.getAuthor().getMentionTag() +
+                    " you don't have permission to do that.");
+        }
+    }
+
+    /**
+     *
+     */
+    public void removeEmote(Message message, Channel objChannel){
+        String serverID = objChannel.getServer().getId();
+        if(message.getAuthor().getId().equals(api.getServerById(serverID).getOwnerId()) ){
+            if (message.getContent().matches("Zremove\\s:[a-zA-Z]+:")){
+                String[] str = message.toString().split(":");
+                remove(serverID, str[2]);
+                objChannel.sendMessage("Removed " + str[2] + message.getAuthor().getMentionTag());
+            } else {
+                objChannel.sendMessage("Please use the format > Zremove :emote:");
+            }
         } else {
             objChannel.sendMessage(message.getAuthor().getMentionTag() +
                     " you don't have permission to do that.");
