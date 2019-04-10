@@ -1,26 +1,24 @@
 # ZarmBot
 ### Discord Bot
 ### Currently under development
-This was mainly made for just a friends and my server but is becoming more popular, as such development may continue.
+This was mainly made for just a friend and my server but is becoming more popular, as such development may continue. Counts how often emotes are used and can list in order of useage. Top5 and Bottom 5 
 
-Current scaling of bot capability underway.
-Previously used for research into some possibilities of the bots functions, now being developed for personal use.
-Adding some small scaling capability to support more servers, SQLite is being added for hard storage and better access
+Previously used for research into some possibilities of the bots functions, being developed for personal use.
+Adding some small scaling capability to support more servers, SQLite is used for hard storage and better access
 to data used by the bot.
 
-Limitations of SQLite are understood and further implementations will address this.
-Since this is only being used on a couple of servers (max 3 atm) SQLite works nicely as a full server is not required for it and all can
-be done locally alongside the bot when running. Being a file based database only one connection can write to the file (make changes) at
-any one time, requests to make changes to the database currently have a time out attached to them to provide some allowance should
-any requests happen at the same time (this usually doesnt affect the execution time of the requests due to low volume of requests). Server owners could run individual instances of the bot to avoid any conflict of requests or blocking, this may be an avenue to look into for the current capability of the bot.
+Limitations of SQLite are understood.
+Since this is only being used on a few servers (3 atm) SQLite works with queues and timouts on requests as there is not a huge influx of requests all the time on one bot instance. Being a file based database only one connection can write to the file (make changes) at
+any one time, requests to make changes to the database have a time out attached to them to provide a buffer should
+any requests happen at the same time (this usually doesnt affect the execution time of the requests due to low volume). 
 
-Much more discord servers to support (possibly 10-15+) would require a full MYSQL database as access would be needed somtimes
-simultaniously and data integrity needs to be upheld. This is for future implementation if more development is done.
+Server owners can run individual instances of the bot currently to avoid any conflict of requests or blocking at all, this may be an avenue to look into for the current capability of the bot. The bot was being run and tested on an AWS EC2 instance and incurrs tiny and even negligible costs PCM as requests to the server are of such low volume, the bot has also been run on a simple apache + Raspberry Pi setup with very good efficiency.
 
-## Future Implementations
-- Fullscale MYSQL database
-- Better hosting
-- Apache/XAMPP
+Much more discord servers to support (10+) on a single instance could cause requests to timeout and not be effective, thus it would be recommended to run your own instance of the bot.
+
+## Possible improvements and adaptations
+- Implement ROOM for database handeling
+- re-write in Kotlin
 
 ##Current List of Commands
         >>> Commands
