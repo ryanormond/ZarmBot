@@ -17,7 +17,7 @@ Server owners can run individual instances of the bot currently to avoid any con
 Much more discord servers to support (10+) on a single instance could cause requests to timeout and not be effective, thus it would be recommended to run your own instance of the bot.
 
 ## Possible improvements and adaptations
-- Implement ROOM for database handeling
+- Implement ROOM for database handling
 - re-write in Kotlin
 
 ##Current List of Commands
