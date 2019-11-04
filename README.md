@@ -1,11 +1,6 @@
 # ZarmBot
 ### Discord Bot
-### Currently under development
-This was mainly made for just a friend and my server but is becoming more popular, as such development may continue. Counts how often emotes are used and can list in order of useage. Top5 and Bottom 5 
-
-Previously used for research into some possibilities of the bots functions, being developed for personal use.
-Adding some small scaling capability to support more servers, SQLite is used for hard storage and better access
-to data used by the bot.
+Simple Bot used for counting server emotes. Was built to help with removing or adding of emotes, finds most and least used for better discord server interaction. Has an added function of a poll the server owner can publish for voting. Was being hosted on an AWS server but could be hosted on somthing as small as a Raspberry Pi.
 
 Limitations of SQLite are understood.
 Since this is only being used on a few servers (3 atm) SQLite works with queues and timouts on requests as there is not a huge influx of requests all the time on one bot instance. Being a file based database only one connection can write to the file (make changes) at
